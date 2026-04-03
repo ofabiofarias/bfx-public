@@ -11,7 +11,7 @@ Paleta de cores:
 
 import streamlit as st
 
-# ── Paleta de cores ──────────────────────────────────────────────────────────
+# Paleta de cores
 
 # Cores por clube (para gráficos Plotly)
 CLUB_COLORS = {"FOR": "#1B2A4A", "CEA": "#C41E3A"}
@@ -24,7 +24,7 @@ CHART_LAYOUT = dict(
     legend=dict(orientation="h", y=1.1),
 )
 
-# ── Categorias do Borderô ───────────────────────────────────────────────────
+# Categorias do Borderô
 
 CATEGORY_ORDER = [
     "INGRESSO",
@@ -71,7 +71,7 @@ COLORS = {
     "error": "#DC2626",  # Vermelho erro
 }
 
-# ── Formatação PT-BR ─────────────────────────────────────────────────────────
+# Formatação PT-BR
 
 
 def fmt_brl(value, decimals=2) -> str:
@@ -91,7 +91,7 @@ def fmt_num(value) -> str:
     return formatted
 
 
-# ── Configuração padrão de colunas para tabelas ─────────────────────────────
+# Configuração padrão de colunas para tabelas
 
 TABLE_COL_CONFIG = {
     "Verificado": st.column_config.TextColumn("Ver.", help="Jogo totalmente revisado"),

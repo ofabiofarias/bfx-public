@@ -38,14 +38,14 @@ from ui.components.bordero import (
 )
 
 
-# ── Page ─────────────────────────────────────────────────────────────────────
+# Page
 
 st.markdown("# :material/receipt_long: Borderô")
 st.caption("Análise financeira detalhada do borderô de cada jogo.")
 
 st.divider()
 
-# ── Filters ──────────────────────────────────────────────────────────────────
+# Filters
 
 clubs_map = get_all_clubs_dict()
 monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
@@ -105,7 +105,7 @@ with col6:
         key="brd_stadium",
     )
 
-# ── Load filtered matches ────────────────────────────────────────────────────
+# Load filtered matches
 
 matches = _load_filtered_matches(
     filter_club, filter_comp, filter_adversario, filter_from, filter_to,
@@ -122,7 +122,7 @@ brd_tab1, brd_tab2 = st.tabs(
 
 with brd_tab1:
 
-    # ── Aggregate Cards ─────────────────────────────────────────────────────
+    # Aggregate Cards
 
     agg = _aggregate_totals(matches)
     agg_lines = _aggregate_lines_totals(matches)
@@ -181,7 +181,7 @@ with brd_tab1:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── Game Selector ────────────────────────────────────────────────────────
+    # Game Selector
 
     game_labels = {}
     year_counters = {}
@@ -246,7 +246,7 @@ with brd_tab1:
     if _show_detail:
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # ── Match Header ─────────────────────────────────────────────────────
+        # Match Header
 
         from ui.match_card import (
             badge_doc_link,
@@ -275,7 +275,7 @@ with brd_tab1:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # ── Load lines ───────────────────────────────────────────────────────
+        # Load lines
 
         lines = _load_match_lines(selected_id)
 
@@ -337,7 +337,7 @@ with brd_tab1:
 
             st.markdown("<br>", unsafe_allow_html=True)
 
-            # ── Detail by Category ───────────────────────────────────────────
+            # Detail by Category
 
             st.markdown(
                 f'<div class="section-header">Detalhamento por Categoria</div>',
@@ -424,7 +424,7 @@ with brd_tab1:
 
             st.markdown("<br><br>", unsafe_allow_html=True)
 
-# ── Tab 2: Análise por Rubrica ─────────────────────────────────────────────
+# Tab 2: Análise por Rubrica
 
 with brd_tab2:
     render_rubrica(matches)

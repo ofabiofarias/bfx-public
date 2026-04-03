@@ -24,7 +24,7 @@ _LOCAL_DB = _DATA_DIR / "bfx.db"
 _MAX_PRE_SYNC_BACKUPS = 3
 
 
-# ── Sync metadata ───────────────────────────────────────────────────────────
+# Sync metadata
 
 
 def _read_meta() -> dict:
@@ -48,7 +48,7 @@ def _append_log(message: str):
         f.write(f"{ts}  {message}\n")
 
 
-# ── Cloud engine (PostgreSQL, for sync only) ────────────────────────────────
+# Cloud engine
 
 
 def _get_cloud_engine():
@@ -64,7 +64,7 @@ def _get_cloud_engine():
     )
 
 
-# ── Pre-sync backup ─────────────────────────────────────────────────────────
+# Pre-sync backup
 
 
 def _backup_before_sync() -> Path | None:
@@ -84,7 +84,7 @@ def _rotate_pre_sync_backups():
         old.unlink(missing_ok=True)
 
 
-# ── PULL: cloud → local ─────────────────────────────────────────────────────
+# PULL: cloud -> local
 
 
 def pull_from_cloud() -> dict:
@@ -236,7 +236,7 @@ def pull_from_cloud() -> dict:
         return {"status": "error", "message": str(e)}
 
 
-# ── Sync status for sidebar ─────────────────────────────────────────────────
+# Sync status for sidebar
 
 
 def get_sync_status() -> dict:
@@ -271,7 +271,7 @@ def get_sync_status() -> dict:
     }
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# Helpers
 
 
 def _count_local_matches() -> int:

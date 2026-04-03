@@ -10,7 +10,7 @@ from core.database import get_session
 from models.models import Club, Match, MatchLine
 from ui.theme import fmt_brl, fmt_num, build_metric_card, COLORS
 
-# ── Header ──────────────────────────────────────────────────────────────────
+# Header
 
 st.markdown("# :material/stadium: Público e Renda")
 st.caption(
@@ -20,7 +20,7 @@ st.caption(
 
 st.divider()
 
-# ── Quick Stats ──────────────────────────────────────────────────────────────
+# Quick Stats
 
 stats = get_dashboard_stats()
 
@@ -98,7 +98,7 @@ st.markdown(
 
 st.divider()
 
-# ── Últimos Jogos Registrados ────────────────────────────────────────────────
+# Últimos Jogos Registrados
 
 st.markdown(
     '<div class="section-header">Últimos Jogos Registrados</div>',
@@ -193,7 +193,7 @@ else:
 
 st.divider()
 
-# ── Sobre ───────────────────────────────────────────────────────────────────
+# Sobre
 
 st.markdown(
     '<div class="section-header">Sobre</div>',

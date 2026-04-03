@@ -35,7 +35,7 @@ from core.match_service import load_match_detail as _load_match_detail
 from models.models import Club, Match, MatchLine, MonitoredAs
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# Helpers
 
 
 def _load_matches(
@@ -122,14 +122,14 @@ def _load_matches(
         return rows
 
 
-# ── Header ───────────────────────────────────────────────────────────────────
+# Header
 
 st.markdown("# :material/sports_soccer: Jogos")
 st.caption("Lista de jogos com dados de público e renda.")
 
 st.divider()
 
-# ── Filters ──────────────────────────────────────────────────────────────────
+# Filters
 
 clubs_map = get_all_clubs_dict()
 monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
@@ -195,7 +195,7 @@ with col8:
         format_func=lambda x: "Todos" if x is None else x,
     )
 
-# ── Match List ───────────────────────────────────────────────────────────────
+# Match List
 
 matches = _load_matches(
     filter_club,
@@ -242,7 +242,7 @@ event = st.dataframe(
     column_config={**TABLE_COL_CONFIG, "_classico": None},
 )
 
-# ── Selected Match (view-only) ──────────────────────────────────────────────
+# Selected Match (view-only)
 
 selected_rows = event.selection.rows if event.selection else []
 
@@ -263,7 +263,7 @@ mon_club = clubs_map.get(match.monitored_club_id)
 
 st.divider()
 
-# ── Match Header Card ───────────────────────────────────────────────────────
+# Match Header Card
 
 st.markdown(
     f'<div class="section-header">Jogo <span style="background:#1B2A4A;color:#fff;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700;margin-left:6px;">ID {match.id}</span></div>',
@@ -299,7 +299,7 @@ card_html = build_match_card_html(
 )
 st.markdown(card_html, unsafe_allow_html=True)
 
-# ── Público e Renda ─────────────────────────────────────────────────────────
+# Público e Renda
 
 st.markdown('<div class="section-header">Público e Renda</div>', unsafe_allow_html=True)
 
@@ -412,7 +412,7 @@ with st.container(border=True):
             unsafe_allow_html=True,
         )
 
-# ── Detalhamento (read-only) ────────────────────────────────────────────────
+# Detalhamento (read-only)
 
 st.markdown(
     '<div class="section-header">Detalhamento</div>',

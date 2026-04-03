@@ -25,7 +25,7 @@ from ui.components.relatorios import (
 )
 
 
-# ── Data Loading ─────────────────────────────────────────────────────────────
+# Data Loading
 
 
 @st.cache_data(ttl=60)
@@ -97,14 +97,14 @@ def load_data(
         return pd.DataFrame(rows)
 
 
-# ── Header ───────────────────────────────────────────────────────────────────
+# Header
 
 st.markdown("# :material/bar_chart: Relatórios")
 st.caption("Painéis analíticos com filtros por clube, competição e período.")
 
 st.divider()
 
-# ── Filters ──────────────────────────────────────────────────────────────────
+# Filters
 
 clubs_map = get_all_clubs_dict()
 monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
@@ -197,12 +197,12 @@ if filter_classico is not None:
         st.info("Nenhum jogo encontrado com os filtros selecionados.")
         st.stop()
 
-# ── Plotly defaults (Design System) ──────────────────────────────────────────
+# Plotly defaults (Design System)
 
 club_colors = CLUB_COLORS
 chart_layout = CHART_LAYOUT
 
-# ── Subset for averages (exclude closed gates, neutral, visitor) ─────────────
+# Subset for averages (exclude closed gates, neutral, visitor)
 
 df_avg = df[
     (df["gates"] != "FECHADO")
@@ -216,7 +216,7 @@ _gates_subtitle = f"aberto: {_n_aberto}" + (
     f" | fechado: {_n_fechado}" if _n_fechado > 0 else ""
 )
 
-# ── Tabs ─────────────────────────────────────────────────────────────────────
+# Tabs
 
 tab1, tab2, tab3, tab5, tab6, tab7 = st.tabs(
     [

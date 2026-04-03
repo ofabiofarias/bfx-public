@@ -1,4 +1,4 @@
-"""Público e Renda — Visualização pública de dados de borderô. Main Streamlit entrypoint."""
+"""Público e Renda — Main entrypoint"""
 
 from datetime import datetime
 
@@ -10,7 +10,7 @@ from core.sync import pull_from_cloud, get_sync_status
 
 init_db()
 
-# ── Sync on startup (once per session) ──────────────────────────────────────
+# Sync on startup
 
 if "sync_done" not in st.session_state:
     with st.spinner("Atualizando dados..."):
@@ -30,7 +30,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Pages ────────────────────────────────────────────────────────────────────
+# Pages
 
 home = st.Page(
     "pages/00_inicio.py", title="Início", icon=":material/home:", default=True
@@ -50,11 +50,11 @@ pg = st.navigation(
     }
 )
 
-# ── Shared CSS ───────────────────────────────────────────────────────────────
+# Shared CSS
 
 inject_shared_css()
 
-# ── Sidebar ──────────────────────────────────────────────────────────────────
+# Sidebar
 
 with st.sidebar:
     st.markdown(
@@ -68,7 +68,7 @@ with st.sidebar:
     )
     st.divider()
 
-    # ── Last update indicator ──────────────────────────────────────────────
+    # Last update indicator
     _sync = get_sync_status()
     _last = _sync.get("last_pull")
 
@@ -104,6 +104,6 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-# ── Run ──────────────────────────────────────────────────────────────────────
+# Run
 
 pg.run()

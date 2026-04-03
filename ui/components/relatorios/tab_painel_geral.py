@@ -24,7 +24,7 @@ def render(
     club_colors: dict,
     gates_subtitle: str,
 ) -> None:
-    # ── Cálculos ────────────────────────────────────────────────────────
+    # Cálculos
     total_games = len(df)
     total_att = df["attendance"].sum()
     avg_att = df_avg["attendance"].mean() if not df_avg.empty else 0
@@ -56,7 +56,7 @@ def render(
     _games_per_year = df.groupby("year")["id"].count()
     avg_games_year = _games_per_year.mean()
 
-    # ── Row 1: Público + Renda — borda navy ─────────────────────────────
+    # Row 1: Público + Renda
     _net_color = "#16A34A" if total_mon_net >= 0 else "#DC2626"
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -107,7 +107,7 @@ def render(
 
     st.markdown("")
 
-    # ── Row 2: Composição do público — borda vermelha + barras ──────────
+    # Row 2: Composição do público
     _red = "#C41E3A"
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -165,7 +165,7 @@ def render(
 
     st.markdown("")
 
-    # ── Row 3: Contexto — borda cinza ────────────────────────────────────
+    # Row 3: Contexto
     _gray = "#868E96"
 
     if not _games_per_year.empty:
@@ -247,7 +247,7 @@ def render(
 
     st.divider()
 
-    # ── Recordes ────────────────────────────────────────────────────────
+    # Recordes
     st.markdown('<div class="section-header">Recordes</div>', unsafe_allow_html=True)
     df_pos = df[(df["attendance"] > 0) & (df["gross_revenue"] > 0)]
     if not df_pos.empty:
@@ -337,7 +337,7 @@ def render(
 
     st.divider()
 
-    # ── 1. Gráficos de barra por ano ────────────────────────────────────
+    # 1. Gráficos de barra por ano
     _yr_agg_total = (
         df.groupby(["year", "monitored_club"])
         .agg(
