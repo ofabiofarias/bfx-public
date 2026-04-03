@@ -113,11 +113,11 @@ _PAINEIS = [
     "Por Competição",
 ]
 
-painel = st.radio(
+painel = st.pills(
     "Painel",
     _PAINEIS,
+    default="Painel Geral",
     key="r_painel",
-    horizontal=True,
     label_visibility="collapsed",
 )
 
@@ -241,17 +241,19 @@ _gates_subtitle = f"aberto: {_n_aberto}" + (
 
 st.divider()
 
-# Render selected painel
+# Render selected painel (st.pills returns None if deselected)
 
-if painel == "Painel Geral":
+_painel = painel or "Painel Geral"
+
+if _painel == "Painel Geral":
     render_painel_geral(df, df_avg, chart_layout, club_colors, _gates_subtitle)
-elif painel == "FOR vs CEA":
+elif _painel == "FOR vs CEA":
     render_for_vs_cea(df, df_avg, chart_layout, club_colors)
-elif painel == "Composição":
+elif _painel == "Composição":
     render_composicao(df, df_avg, chart_layout, club_colors)
-elif painel == "Financeiro":
+elif _painel == "Financeiro":
     render_financeiro(df, df_avg, chart_layout, club_colors)
-elif painel == "Sazonalidade":
+elif _painel == "Sazonalidade":
     render_sazonalidade(df, df_avg, chart_layout, club_colors)
-elif painel == "Por Competição":
+elif _painel == "Por Competição":
     render_competicao(df, df_avg, chart_layout, club_colors)

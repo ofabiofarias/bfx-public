@@ -479,40 +479,12 @@ def inject_shared_css():
             color: {COLORS["accent"]} !important;
         }}
 
-        /* ── Radio as Pill Tabs (painel selector) ──────────────────── */
+        /* ── Pills (painel selector) — accent on selected ────────── */
 
-        div[data-testid="stRadio"] > div[role="radiogroup"] {{
-            gap: 0 !important;
-            flex-wrap: wrap;
-        }}
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label {{
-            background: {COLORS["white"]};
-            border: 1.5px solid {COLORS["border"]};
-            border-radius: 8px;
-            padding: 8px 18px !important;
-            margin: 3px 4px !important;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-weight: 500;
-            font-size: 0.88rem;
-        }}
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {{
-            border-color: {COLORS["primary"]};
-            background: {COLORS["bg"]};
-        }}
-        /* Selected radio — checked input inside label */
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {{
+        [data-testid="stPills"] button[aria-checked="true"] {{
             background: {COLORS["primary"]} !important;
             border-color: {COLORS["primary"]} !important;
-        }}
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p,
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) span {{
             color: {COLORS["white"]} !important;
-            font-weight: 700;
-        }}
-        /* Hide radio circle */
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {{
-            display: none;
         }}
 
         /* ── Primary Button Accent ──────────────────────────────────── */
