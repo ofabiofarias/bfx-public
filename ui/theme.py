@@ -527,6 +527,12 @@ def inject_shared_css():
             border-left: 5px solid {COLORS["accent"]};
             letter-spacing: 0.02em;
         }}
+
+        /* ── Hide Streamlit GitHub Icon ─────────────────────────── */
+
+        #GithubIcon {{
+            visibility: hidden;
+        }}
     </style>
     """,
         unsafe_allow_html=True,
