@@ -101,7 +101,9 @@ def render(
         x="Competição",
         y="Público médio",
         color="Competição",
+        text_auto=".2s",
     )
+    fig_c.update_traces(textposition="outside", textfont_size=10)
     fig_c.update_layout(
         height=350,
         showlegend=False,

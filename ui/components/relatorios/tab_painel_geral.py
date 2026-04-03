@@ -366,9 +366,11 @@ def render(
             y="publico_total",
             color="monitored_club",
             barmode="group",
+            text_auto=".2s",
             color_discrete_map=club_colors,
             labels={"year": "", "publico_total": "Público", "monitored_club": "Clube"},
         )
+        fig1.update_traces(textposition="outside", textfont_size=10)
         fig1.update_layout(height=350, **chart_layout)
         st.plotly_chart(fig1, use_container_width=True)
 
@@ -380,9 +382,11 @@ def render(
             y="renda_total",
             color="monitored_club",
             barmode="group",
+            text_auto=".2s",
             color_discrete_map=club_colors,
             labels={"year": "", "renda_total": "R$", "monitored_club": "Clube"},
         )
+        fig2.update_traces(textposition="outside", textfont_size=10)
         fig2.update_layout(height=350, **chart_layout)
         st.plotly_chart(fig2, use_container_width=True)
 
@@ -393,6 +397,7 @@ def render(
         y="publico_medio",
         color="monitored_club",
         barmode="group",
+        text_auto=".2s",
         color_discrete_map=club_colors,
         labels={
             "year": "",
@@ -400,6 +405,7 @@ def render(
             "monitored_club": "Clube",
         },
     )
+    fig_avg.update_traces(textposition="outside", textfont_size=10)
     fig_avg.update_layout(height=350, **chart_layout)
     st.plotly_chart(fig_avg, use_container_width=True)
 

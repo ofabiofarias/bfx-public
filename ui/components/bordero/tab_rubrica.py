@@ -275,8 +275,10 @@ def render(matches: list[dict]):
         y="valor",
         color="rubrica",
         barmode="group",
+        text_auto=".2s",
         labels={"ano": "Ano", "valor": "Valor (R$)", "rubrica": "Rubrica"},
     )
+    fig_bar.update_traces(textposition="outside", textfont_size=10)
     fig_bar.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
