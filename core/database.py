@@ -97,7 +97,8 @@ def get_distinct_visitors() -> list[str]:
         return sorted(names)
 
 
+@st.cache_resource
 def init_db():
-    """Create tables and seed initial data."""
+    """Create tables and seed initial data (runs once per process)."""
     create_db_and_tables()
     seed_clubs()

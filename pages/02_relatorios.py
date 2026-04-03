@@ -102,79 +102,97 @@ def load_data(
 st.markdown("# :material/bar_chart: Relatórios")
 st.caption("Painéis analíticos com filtros por clube, competição e período.")
 
-st.divider()
+# Painel selector — prominent, above everything
 
-# Filters
+_PAINEIS = [
+    "Painel Geral",
+    "FOR vs CEA",
+    "Composição",
+    "Financeiro",
+    "Sazonalidade",
+    "Por Competição",
+]
 
-clubs_map = get_all_clubs_dict()
-monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
+painel = st.radio(
+    "Painel",
+    _PAINEIS,
+    key="r_painel",
+    horizontal=True,
+    label_visibility="collapsed",
+)
 
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    filter_club = st.selectbox(
-        "Clube",
-        options=[None] + list(monitored.keys()),
-        format_func=lambda x: "Todos" if x is None else f"{monitored[x].short_name}",
-        key="r_club",
-    )
-with col2:
-    visitors = get_distinct_visitors()
-    filter_adversario = st.selectbox(
-        "Adversário",
-        options=[None] + visitors,
-        format_func=lambda x: "Todos" if x is None else x,
-        key="r_adv",
-    )
-with col3:
-    competitions = get_distinct_competitions()
-    filter_comp = st.selectbox(
-        "Competição",
-        options=[None] + competitions,
-        format_func=lambda x: "Todas" if x is None else x,
-        key="r_comp",
-    )
-with col4:
-    stadiums = get_distinct_stadiums()
-    filter_stadium = st.selectbox(
-        "Estádio",
-        options=[None] + stadiums,
-        format_func=lambda x: "Todos" if x is None else x,
-        key="r_stad",
-    )
+# Filters inside expander
 
-col5, col6, col7, col8 = st.columns(4)
-with col5:
-    filter_from = st.date_input(
-        "De",
-        value=date.today().replace(day=1, month=1),
-        format="DD/MM/YYYY",
-        key="r_from",
-        min_value=date(2012, 1, 1),
-        max_value=date.today(),
-    )
-with col6:
-    filter_to = st.date_input(
-        "Até",
-        value=date.today(),
-        format="DD/MM/YYYY",
-        key="r_to",
-        min_value=date(2012, 1, 1),
-        max_value=date.today(),
-    )
-with col7:
-    filter_tipo = st.selectbox(
-        "Tipo",
-        options=["Mandante", "Visitante", "Todos"],
-        index=0,
-        key="r_tipo",
-    )
-with col8:
-    filter_classico = st.selectbox(
-        "Clássico",
-        options=[None, "Sim", "Não"],
-        format_func=lambda x: "Todos" if x is None else x,
-        key="r_classico",
-    )
+with st.expander(":material/filter_list: Filtros", expanded=False):
+    clubs_map = get_all_clubs_dict()
+    monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
+
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        filter_club = st.selectbox(
+            "Clube",
+            options=[None] + list(monitored.keys()),
+            format_func=lambda x: "Todos" if x is None else f"{monitored[x].short_name}",
+            key="r_club",
+        )
+    with col2:
+        visitors = get_distinct_visitors()
+        filter_adversario = st.selectbox(
+            "Adversário",
+            options=[None] + visitors,
+            format_func=lambda x: "Todos" if x is None else x,
+            key="r_adv",
+        )
+    with col3:
+        competitions = get_distinct_competitions()
+        filter_comp = st.selectbox(
+            "Competição",
+            options=[None] + competitions,
+            format_func=lambda x: "Todas" if x is None else x,
+            key="r_comp",
+        )
+    with col4:
+        stadiums = get_distinct_stadiums()
+        filter_stadium = st.selectbox(
+            "Estádio",
+            options=[None] + stadiums,
+            format_func=lambda x: "Todos" if x is None else x,
+            key="r_stad",
+        )
+
+    col5, col6, col7, col8 = st.columns(4)
+    with col5:
+        filter_from = st.date_input(
+            "De",
+            value=date.today().replace(day=1, month=1),
+            format="DD/MM/YYYY",
+            key="r_from",
+            min_value=date(2012, 1, 1),
+            max_value=date.today(),
+        )
+    with col6:
+        filter_to = st.date_input(
+            "Até",
+            value=date.today(),
+            format="DD/MM/YYYY",
+            key="r_to",
+            min_value=date(2012, 1, 1),
+            max_value=date.today(),
+        )
+    with col7:
+        filter_tipo = st.selectbox(
+            "Tipo",
+            options=["Mandante", "Visitante", "Todos"],
+            index=0,
+            key="r_tipo",
+        )
+    with col8:
+        filter_classico = st.selectbox(
+            "Clássico",
+            options=[None, "Sim", "Não"],
+            format_func=lambda x: "Todos" if x is None else x,
+            key="r_classico",
+        )
 
 tipo_val = None if filter_tipo == "Todos" else filter_tipo
 df = load_data(
@@ -210,39 +228,30 @@ df_avg = df[
     & (df["monitored_as"] != "away")
 ]
 
+# Derived columns used by multiple tabs
+df["year"] = pd.to_datetime(df["date"]).dt.year
+if not df_avg.empty:
+    df_avg["year"] = pd.to_datetime(df_avg["date"]).dt.year
+
 _n_aberto = len(df[df["gates"] == "ABERTO"])
 _n_fechado = len(df[df["gates"] == "FECHADO"])
 _gates_subtitle = f"aberto: {_n_aberto}" + (
     f" | fechado: {_n_fechado}" if _n_fechado > 0 else ""
 )
 
-# Tabs
+st.divider()
 
-tab1, tab2, tab3, tab5, tab6, tab7 = st.tabs(
-    [
-        ":material/dashboard: Painel Geral",
-        ":material/compare_arrows: FOR vs CEA",
-        ":material/emoji_events: Por Competição",
-        ":material/groups: Composição",
-        ":material/attach_money: Financeiro",
-        ":material/calendar_month: Sazonalidade",
-    ]
-)
+# Render selected painel
 
-with tab1:
+if painel == "Painel Geral":
     render_painel_geral(df, df_avg, chart_layout, club_colors, _gates_subtitle)
-
-with tab2:
+elif painel == "FOR vs CEA":
     render_for_vs_cea(df, df_avg, chart_layout, club_colors)
-
-with tab3:
-    render_competicao(df, df_avg, chart_layout, club_colors)
-
-with tab5:
+elif painel == "Composição":
     render_composicao(df, df_avg, chart_layout, club_colors)
-
-with tab6:
+elif painel == "Financeiro":
     render_financeiro(df, df_avg, chart_layout, club_colors)
-
-with tab7:
+elif painel == "Sazonalidade":
     render_sazonalidade(df, df_avg, chart_layout, club_colors)
+elif painel == "Por Competição":
+    render_competicao(df, df_avg, chart_layout, club_colors)

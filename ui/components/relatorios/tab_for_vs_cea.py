@@ -91,7 +91,7 @@ def render(
                 value="Ceará SC",
                 subtitle=f"{len(df_cea)} jogos · {_cea_gates}",
                 sub2=f"Público total: {fmt_num(cea_att)}",
-                icon="💩",
+                icon="elderly",
                 color=COLORS["accent"],
             ),
             unsafe_allow_html=True,

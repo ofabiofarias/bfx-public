@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 chcp 65001 > nul
 pushd "%~dp0"
 
-title [bx] borderô extractor
+title [bfx] public
 color 0F
 
 for /f %%a in ('powershell -command "[char]27"') do set ESC=%%a
