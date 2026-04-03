@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🏟️ Público e Renda — Futebol Cearense</h1>
+  <h1>🏟️ Público e Renda - Futebol Cearense</h1>
   <p>Dashboard analítico e interativo dos boletins financeiros oficiais de Fortaleza EC e Ceará SC.</p>
 
   <!-- Badges -->
