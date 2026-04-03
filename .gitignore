@@ -4,6 +4,7 @@ __pycache__/
 *.db
 .streamlit/
 .env
+.bat
 
 # Virtual environments
 .venv/
