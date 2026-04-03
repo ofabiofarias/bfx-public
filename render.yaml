@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: publico-renda
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
