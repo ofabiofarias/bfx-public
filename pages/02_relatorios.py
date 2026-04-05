@@ -123,22 +123,7 @@ painel = st.pills(
 
 # Filters inside expander
 
-_n_filters = sum([
-    st.session_state.get("r_club") is not None,
-    st.session_state.get("r_adv") is not None,
-    st.session_state.get("r_comp") is not None,
-    st.session_state.get("r_stad") is not None,
-    st.session_state.get("r_tipo", "Mandante") != "Mandante",
-    st.session_state.get("r_classico") is not None,
-    st.session_state.get("r_from", date.today().replace(day=1, month=1))
-    != date.today().replace(day=1, month=1),
-    st.session_state.get("r_to", date.today()) != date.today(),
-])
-_filter_label = (
-    f":material/filter_list: Filtros ({_n_filters})" if _n_filters > 0
-    else ":material/filter_list: Filtros"
-)
-with st.expander(_filter_label, expanded=False):
+with st.expander(":material/filter_list: Filtros", expanded=False):
     clubs_map = get_all_clubs_dict()
     monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
 
