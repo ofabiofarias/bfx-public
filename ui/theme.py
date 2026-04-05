@@ -9,6 +9,8 @@ Paleta de cores:
     Cinza texto secundário  : #6B7280
 """
 
+import math
+
 import streamlit as st
 
 # Paleta de cores
@@ -76,7 +78,7 @@ COLORS = {
 
 def fmt_brl(value, decimals=2) -> str:
     """Formata número como moeda brasileira: R$ 1.234,56"""
-    if value is None:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
         return "R$ 0,00"
     formatted = f"{float(value):,.{decimals}f}"
     formatted = formatted.replace(",", "@").replace(".", ",").replace("@", ".")
@@ -85,7 +87,7 @@ def fmt_brl(value, decimals=2) -> str:
 
 def fmt_num(value) -> str:
     """Formata inteiro com separador de milhar PT-BR: 1.234"""
-    if value is None:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
         return "0"
     formatted = f"{int(value):,}".replace(",", ".")
     return formatted

@@ -270,6 +270,8 @@ def render(
     # Charts
     if "year" not in df.columns:
         df["year"] = pd.to_datetime(df["date"]).dt.year
+    if "year" not in df_avg.columns:
+        df_avg["year"] = pd.to_datetime(df_avg["date"]).dt.year
 
     _df_fc = df[df["monitored_club"].isin(["FOR", "CEA"])]
     _df_fc_avg = df_avg[df_avg["monitored_club"].isin(["FOR", "CEA"])]
@@ -376,9 +378,11 @@ def render(
         .reset_index()
     )
     _rank_yr.columns = ["Ano", "Clube", "Público médio"]
-    _rank_pivot = _rank_yr.pivot(
-        index="Ano", columns="Clube", values="Público médio"
-    ).reset_index()
+    _rank_pivot = (
+        _rank_yr.pivot(index="Ano", columns="Clube", values="Público médio")
+        .fillna(0)
+        .reset_index()
+    )
 
     _rank_rows = ""
     for _, _rr in _rank_pivot.iterrows():
