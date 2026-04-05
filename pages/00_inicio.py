@@ -195,28 +195,23 @@ st.divider()
 
 # Sobre
 
-st.markdown(
-    '<div class="section-header">Sobre</div>',
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    f"""<div style="font-size:0.88rem;color:{COLORS['primary']};line-height:1.6;">
-Este dashboard disponibiliza publicamente os dados de <strong>público e renda</strong> extraídos
-dos boletins financeiros (borderôs) dos jogos de <strong>Fortaleza EC</strong> e <strong>Ceará SC</strong>.
-<br><br>
-<strong>O que você encontra aqui:</strong><br>
-&bull; <strong>Jogos</strong> — Lista completa com público, renda bruta e líquida<br>
-&bull; <strong>Relatórios</strong> — Painéis analíticos com filtros por clube, competição e período<br>
-&bull; <strong>Borderô</strong> — Detalhamento financeiro individual de cada jogo
-<br><br>
-Os dados são atualizados periodicamente a partir dos boletins financeiros oficiais
-publicados pela CBF e FCF.
-<br><br>
-<span style="font-size:0.78rem;color:{COLORS['text_secondary']};">Criado e atualizado por fabio farias.</span>
-</div>""",
-    unsafe_allow_html=True,
-)
+with st.expander(":material/info: Sobre este projeto", expanded=False):
+    st.markdown(
+        f"""<div style="font-size:0.84rem;color:{COLORS['primary']};line-height:1.6;">
+    Dados de <strong>público e renda</strong> extraídos dos boletins financeiros (borderôs)
+    dos jogos de <strong>Fortaleza EC</strong> e <strong>Ceará SC</strong>.
+    <br><br>
+    <strong>O que você encontra aqui:</strong><br>
+    &bull; <strong>Jogos</strong> — Lista completa com público, renda bruta e líquida<br>
+    &bull; <strong>Relatórios</strong> — Painéis analíticos com filtros por clube, competição e período<br>
+    &bull; <strong>Borderô</strong> — Detalhamento financeiro individual de cada jogo
+    <br><br>
+    <span style="font-size:0.75rem;color:{COLORS['text_secondary']};">
+    Dados atualizados periodicamente a partir dos boletins oficiais da CBF e FCF.
+    Criado por fabio farias.</span>
+    </div>""",
+        unsafe_allow_html=True,
+    )
 
 if total_matches == 0:
     st.divider()

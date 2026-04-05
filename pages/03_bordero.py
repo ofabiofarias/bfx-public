@@ -105,6 +105,36 @@ with col6:
         key="brd_stadium",
     )
 
+# Active filter summary
+_active_filters: list[str] = []
+if filter_club is not None:
+    _active_filters.append(f"Clube: {monitored[filter_club].short_name}")
+if filter_adversario is not None:
+    _active_filters.append(f"Adversário: {filter_adversario}")
+if filter_comp is not None:
+    _active_filters.append(f"Competição: {filter_comp}")
+if filter_stadium is not None:
+    _active_filters.append(f"Estádio: {filter_stadium}")
+_default_from = date.today().replace(day=1, month=1)
+_default_to = date.today()
+if filter_from != _default_from or filter_to != _default_to:
+    _active_filters.append(
+        f"Período: {filter_from.strftime('%d/%m/%Y')} - {filter_to.strftime('%d/%m/%Y')}"
+    )
+
+if _active_filters:
+    _chips_html = "".join(
+        f'<span style="display:inline-block;background:#EEF2F9;color:{COLORS["primary"]};'
+        f"font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:12px;"
+        f'margin:0 4px 4px 0;letter-spacing:0.01em;">{f}</span>'
+        for f in _active_filters
+    )
+    st.markdown(
+        f'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;'
+        f'margin:8px 0;">{_chips_html}</div>',
+        unsafe_allow_html=True,
+    )
+
 # Load filtered matches
 
 matches = _load_filtered_matches(

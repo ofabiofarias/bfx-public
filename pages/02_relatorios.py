@@ -63,10 +63,10 @@ def load_data(
             mon = clubs.get(m.monitored_club_id)
             home_c = clubs.get(m.home_club_id)
             away_c = clubs.get(m.away_club_id)
-            is_classico = (
-                {(home_c.short_name if home_c else ""), (away_c.short_name if away_c else "")}
-                == _classic_shorts
-            )
+            is_classico = {
+                (home_c.short_name if home_c else ""),
+                (away_c.short_name if away_c else ""),
+            } == _classic_shorts
             rows.append(
                 {
                     "id": m.id,
@@ -123,7 +123,22 @@ painel = st.pills(
 
 # Filters inside expander
 
-with st.expander(":material/filter_list: Filtros", expanded=False):
+_n_filters = sum([
+    st.session_state.get("r_club") is not None,
+    st.session_state.get("r_adv") is not None,
+    st.session_state.get("r_comp") is not None,
+    st.session_state.get("r_stad") is not None,
+    st.session_state.get("r_tipo", "Mandante") != "Mandante",
+    st.session_state.get("r_classico") is not None,
+    st.session_state.get("r_from", date.today().replace(day=1, month=1))
+    != date.today().replace(day=1, month=1),
+    st.session_state.get("r_to", date.today()) != date.today(),
+])
+_filter_label = (
+    f":material/filter_list: Filtros ({_n_filters})" if _n_filters > 0
+    else ":material/filter_list: Filtros"
+)
+with st.expander(_filter_label, expanded=False):
     clubs_map = get_all_clubs_dict()
     monitored = {cid: c for cid, c in clubs_map.items() if c.monitored}
 
@@ -132,7 +147,9 @@ with st.expander(":material/filter_list: Filtros", expanded=False):
         filter_club = st.selectbox(
             "Clube",
             options=[None] + list(monitored.keys()),
-            format_func=lambda x: "Todos" if x is None else f"{monitored[x].short_name}",
+            format_func=lambda x: (
+                "Todos" if x is None else f"{monitored[x].short_name}"
+            ),
             key="r_club",
         )
     with col2:
@@ -240,6 +257,45 @@ _gates_subtitle = f"aberto: {_n_aberto}" + (
 )
 
 st.divider()
+
+# Active filter summary
+_active_filters: list[str] = []
+if filter_club is not None:
+    _active_filters.append(f"Clube: {monitored[filter_club].short_name}")
+if filter_adversario is not None:
+    _active_filters.append(f"Adversário: {filter_adversario}")
+if filter_comp is not None:
+    _active_filters.append(f"Competição: {filter_comp}")
+if filter_stadium is not None:
+    _active_filters.append(f"Estádio: {filter_stadium}")
+_default_from = date.today().replace(day=1, month=1)
+_default_to = date.today()
+if filter_from != _default_from or filter_to != _default_to:
+    _active_filters.append(
+        f"Período: {filter_from.strftime('%d/%m/%Y')} - {filter_to.strftime('%d/%m/%Y')}"
+    )
+if filter_tipo != "Mandante":
+    _active_filters.append(f"Tipo: {filter_tipo}")
+if filter_classico is not None:
+    _lbl = "Sim" if filter_classico == "Sim" else "Não"
+    _active_filters.append(f"Clássico: {_lbl}")
+
+_count_chip = (
+    f'<span style="display:inline-block;background:{COLORS["primary"]};color:#fff;'
+    f"font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:12px;"
+    f'margin:0 4px 4px 0;letter-spacing:0.01em;">{len(df)} jogos</span>'
+)
+_filter_chips = "".join(
+    f'<span style="display:inline-block;background:#EEF2F9;color:{COLORS["primary"]};'
+    f"font-size:0.75rem;font-weight:600;padding:3px 10px;border-radius:12px;"
+    f'margin:0 4px 4px 0;letter-spacing:0.01em;">{f}</span>'
+    for f in _active_filters
+)
+st.markdown(
+    f'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;'
+    f'margin:-8px 0 8px 0;">{_count_chip}{_filter_chips}</div>',
+    unsafe_allow_html=True,
+)
 
 # Render selected painel (st.pills returns None if deselected)
 
