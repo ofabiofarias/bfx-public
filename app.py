@@ -23,7 +23,7 @@ init_db()
 # process restarts the cloud is only contacted when stale.
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def _sync_once_per_process() -> dict:
     return pull_from_cloud()
 
@@ -99,32 +99,6 @@ with st.sidebar:
         f'</div>',
         unsafe_allow_html=True,
     )
-
-    if st.button(
-        ":material/refresh: Atualizar agora",
-        key="btn_force_pull",
-        use_container_width=True,
-        help="Força um pull da nuvem, ignorando o TTL",
-    ):
-        with st.spinner("Atualizando dados..."):
-            _forced = pull_from_cloud(force=True)
-        _sync_once_per_process.clear()
-        if _forced.get("status") == "ok":
-            _mode = _forced.get("mode")
-            if _mode == "noop":
-                st.toast("Nada novo", icon=":material/cloud_done:")
-            else:
-                stats = _forced.get("stats", {})
-                st.toast(
-                    f"Atualizado — {stats.get('matches', 0)} jogos",
-                    icon=":material/cloud_done:",
-                )
-        else:
-            st.toast(
-                _forced.get("message", "Falha ao atualizar"),
-                icon=":material/cloud_alert:",
-            )
-        st.rerun()
 
     # Footer
     st.markdown(
