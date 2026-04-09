@@ -18,18 +18,28 @@ st.set_page_config(
 
 init_db()
 
-# Sync on startup
+# Sync on startup — process-wide cache avoids per-session re-pulls.
+# The pull itself is gated by a persistent TTL in .sync_meta, so even across
+# process restarts the cloud is only contacted when stale.
 
-if "sync_done" not in st.session_state:
-    with st.spinner("Atualizando dados..."):
-        pull_result = pull_from_cloud()
-    st.session_state.sync_done = True
-    st.session_state.sync_result = pull_result
-    if pull_result.get("status") == "ok":
+
+@st.cache_resource
+def _sync_once_per_process() -> dict:
+    return pull_from_cloud()
+
+
+pull_result = _sync_once_per_process()
+_status = pull_result.get("status")
+if _status == "ok":
+    _mode = pull_result.get("mode")
+    if _mode and _mode != "noop":
         stats = pull_result.get("stats", {})
-        st.toast(f"Dados atualizados — {stats.get('matches', 0)} jogos", icon=":material/cloud_done:")
-    elif pull_result.get("status") != "no_cloud":
-        st.toast("Falha ao atualizar dados", icon=":material/cloud_alert:")
+        st.toast(
+            f"Dados atualizados — {stats.get('matches', 0)} jogos",
+            icon=":material/cloud_done:",
+        )
+elif _status == "error":
+    st.toast("Falha ao atualizar dados", icon=":material/cloud_alert:")
 
 # Pages
 
@@ -89,6 +99,32 @@ with st.sidebar:
         f'</div>',
         unsafe_allow_html=True,
     )
+
+    if st.button(
+        ":material/refresh: Atualizar agora",
+        key="btn_force_pull",
+        use_container_width=True,
+        help="Força um pull da nuvem, ignorando o TTL",
+    ):
+        with st.spinner("Atualizando dados..."):
+            _forced = pull_from_cloud(force=True)
+        _sync_once_per_process.clear()
+        if _forced.get("status") == "ok":
+            _mode = _forced.get("mode")
+            if _mode == "noop":
+                st.toast("Nada novo", icon=":material/cloud_done:")
+            else:
+                stats = _forced.get("stats", {})
+                st.toast(
+                    f"Atualizado — {stats.get('matches', 0)} jogos",
+                    icon=":material/cloud_done:",
+                )
+        else:
+            st.toast(
+                _forced.get("message", "Falha ao atualizar"),
+                icon=":material/cloud_alert:",
+            )
+        st.rerun()
 
     # Footer
     st.markdown(
