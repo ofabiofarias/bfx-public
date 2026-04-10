@@ -18,17 +18,10 @@ st.set_page_config(
 
 init_db()
 
-# Sync on startup — process-wide cache avoids per-session re-pulls.
-# The pull itself is gated by a persistent TTL in .sync_meta, so even across
-# process restarts the cloud is only contacted when stale.
-
-
-@st.cache_resource(show_spinner=False)
-def _sync_once_per_process() -> dict:
-    return pull_from_cloud()
-
-
-pull_result = _sync_once_per_process()
+# Sync on page interaction
+# The sync function is intelligently gated by a TTL and Thread Locks in core/sync.py,
+# thus preventing both egress abuse and concurrent database locks natively.
+pull_result = pull_from_cloud()
 _status = pull_result.get("status")
 if _status == "ok":
     _mode = pull_result.get("mode")
@@ -93,9 +86,14 @@ with st.sidebar:
         _color = COLORS["error"]
 
     st.markdown(
-        f'<div style="display:flex;align-items:center;gap:5px;padding:2px 0 8px 0;cursor:default;">'
+        f'<div style="display:flex;flex-direction:column;gap:1px;padding:2px 0 8px 0;cursor:default;">'
+        f'<div style="display:flex;align-items:center;gap:5px;">'
         f'<span style="font-family:\'Material Symbols Rounded\';font-size:0.75rem;color:{_color};">cloud_done</span>'
         f'<span style="color:{COLORS["text_secondary"]};font-size:0.68rem;letter-spacing:0.02em;">{_ts_str}</span>'
+        f'</div>'
+        f'<div style="color:{COLORS["text_secondary"]};font-size:0.55rem;letter-spacing:0.02em;padding-left:22px;opacity:0.7;">'
+        f'sincronização automática a cada 10 min'
+        f'</div>'
         f'</div>',
         unsafe_allow_html=True,
     )

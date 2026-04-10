@@ -14,6 +14,7 @@ import logging
 import os
 import shutil
 import sqlite3
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -30,8 +31,10 @@ _SYNC_LOG = _DATA_DIR / ".sync_log"
 _LOCAL_DB = _DATA_DIR / "bfx.db"
 _MAX_PRE_SYNC_BACKUPS = 3
 
-# TTL in seconds. Read-only consumer can be aggressive — user can force via button.
-PULL_TTL_SECONDS = int(os.getenv("PULL_TTL_SECONDS", str(6 * 3600)))
+_sync_lock = threading.Lock()
+
+# TTL in seconds. Read-only consumer polls smartly. Defaults to 10 minutos.
+PULL_TTL_SECONDS = int(os.getenv("PULL_TTL_SECONDS", str(10 * 60)))
 
 
 # Sync metadata
@@ -596,11 +599,20 @@ def pull_from_cloud(*, force: bool = False) -> dict:
             "message": f"Pull recente ({int(age/60)}min atrás) — TTL não expirou",
         }
 
-    cloud_engine = _get_cloud_engine()
-    if cloud_engine is None:
-        return {"status": "no_cloud", "message": "Cloud URL não configurada"}
+    if not _sync_lock.acquire(blocking=False):
+        _append_log("PULL SKIP  concurrent sync in progress")
+        return {
+            "status": "skipped",
+            "reason": "concurrent",
+            "message": "Sincronização já em andamento",
+        }
 
     try:
+        cloud_engine = _get_cloud_engine()
+        if cloud_engine is None:
+            return {"status": "no_cloud", "message": "Cloud URL não configurada"}
+
+        try:
         with Session(cloud_engine) as cloud:
             # Stage 2 — probe
             cloud_state = _probe_cloud(cloud)
@@ -666,11 +678,15 @@ def pull_from_cloud(*, force: bool = False) -> dict:
         meta = _read_meta()
         meta["last_error"] = f"Pull failed: {e}"
         _write_meta(meta)
-        try:
-            cloud_engine.dispose()
-        except Exception:
-            pass
+        if 'cloud_engine' in locals() and cloud_engine is not None:
+            try:
+                cloud_engine.dispose()
+            except Exception:
+                pass
         return {"status": "error", "message": str(e)}
+
+    finally:
+        _sync_lock.release()
 
 
 # Sync status for sidebar
