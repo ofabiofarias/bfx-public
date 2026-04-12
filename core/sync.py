@@ -612,7 +612,6 @@ def pull_from_cloud(*, force: bool = False) -> dict:
         if cloud_engine is None:
             return {"status": "no_cloud", "message": "Cloud URL não configurada"}
 
-        try:
         with Session(cloud_engine) as cloud:
             # Stage 2 — probe
             cloud_state = _probe_cloud(cloud)
