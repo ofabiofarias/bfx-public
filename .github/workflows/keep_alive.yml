@@ -1,9 +1,9 @@
-name: Keep Alive Streamlit
+name: Keep Alive - BFX Public
 
 on:
   schedule:
-    # Roda a cada 6 horas (Streamlit Cloud hiberna após 7 dias de inatividade)
-    - cron: '0 */6 * * *'
+    # Roda a cada 12 horas (Streamlit Cloud hiberna após 7 dias de inatividade)
+    - cron: "0 */12 * * *"
   workflow_dispatch: # Permite rodar manualmente para testar
 
 jobs:
