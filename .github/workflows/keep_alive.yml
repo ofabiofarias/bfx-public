@@ -1,0 +1,15 @@
+name: Keep Alive Streamlit
+
+on:
+  schedule:
+    # Roda a cada 6 horas (Streamlit Cloud hiberna após 7 dias de inatividade)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permite rodar manualmente para testar
+
+jobs:
+  ping_app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Streamlit URL
+        run: |
+          curl -sL -D - -o /dev/null -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" https://publi-renda.streamlit.app/
