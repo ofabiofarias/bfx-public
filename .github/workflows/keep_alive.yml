@@ -2,14 +2,69 @@ name: Keep Alive - BFX Public
 
 on:
   schedule:
-    # Roda a cada 6 horas (Streamlit Cloud hiberna após 7 dias de inatividade)
-    - cron: "0 */6 * * *"
+    # Roda a cada 12 horas para manter ativo
+    - cron: "0 */12 * * *"
   workflow_dispatch: # Permite rodar manualmente para testar
 
 jobs:
   ping_app:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Streamlit URL
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
-          curl -I -s -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" https://publi-renda.streamlit.app/
+          python -m pip install --upgrade pip
+          pip install selenium webdriver-manager
+
+      - name: Wake up Streamlit App
+        run: |
+          cat << 'EOF' > wake_up.py
+          import time
+          from selenium import webdriver
+          from selenium.webdriver.chrome.service import Service
+          from selenium.webdriver.chrome.options import Options
+          from webdriver_manager.chrome import ChromeDriverManager
+          from selenium.webdriver.common.by import By
+
+          print('Configurando o navegador Chrome em modo headless...')
+          options = Options()
+          options.add_argument('--headless')
+          options.add_argument('--no-sandbox')
+          options.add_argument('--disable-dev-shm-usage')
+          options.add_argument('--window-size=1920,1080')
+          options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+
+          driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+          url = 'https://publi-renda.streamlit.app/'
+          print(f'Acessando a URL: {url}')
+          driver.get(url)
+
+          # Aguarda 10 segundos para a página inicial carregar
+          time.sleep(10)
+
+          try:
+              # Verifica se há botão de "Wake up" ou similar (Streamlit Cloud exibe quando o app hiberna)
+              buttons = driver.find_elements(By.TAG_NAME, 'button')
+              clicked = False
+              for btn in buttons:
+                  text = btn.text.lower()
+                  if 'wake' in text or 'yes' in text or 'boot' in text:
+                      print(f"Botão de despertar encontrado: '{btn.text}'. Clicando...")
+                      btn.click()
+                      clicked = True
+                      time.sleep(15) # Aguarda inicialização do container
+                      break
+              if not clicked:
+                  print('Nenhum botão de despertar encontrado. O aplicativo já deve estar ativo!')
+          except Exception as e:
+              print(f'Erro ao verificar botões: {e}')
+
+          print('Acesso concluído. Fechando o navegador.')
+          driver.quit()
+          EOF
+          python wake_up.py
